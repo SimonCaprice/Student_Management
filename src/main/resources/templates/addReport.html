@@ -1,0 +1,101 @@
+<!doctype html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>学生管理系统</title>
+  <header th:replace="header::html"></header>
+</head>
+<body class="index">
+<!--提交到SysPeportController的save方法-->
+<form class="layui-form" >
+  <div class="layui-form-item">
+    <label class="layui-form-label">申请人姓名</label>
+    <div class="layui-input-inline">
+      <input type="text" name="applicant" lay-verify="required" placeholder="请输入" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">申请人班级</label>
+    <div class="layui-input-inline">
+      <input type="text" name="sclass" lay-verify="required" placeholder="请输入" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">申请学号</label>
+    <div class="layui-input-inline">
+      <input type="text" name="snumber" lay-verify="required" placeholder="请输入" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">请假类型</label>
+    <div class="layui-input-block">
+      <input type="radio" name="reason" th:each="c:${dict['reason']}"
+             th:value="${c.dictKey}" th:title="${c.dictValue}">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+  <div class="layui-form-item">
+    <label class="layui-form-label">请假时长</label>
+    <div class="layui-input-block">
+      <input type="radio" name="duration"  th:each="c:${dict['duration']}"
+             th:value="${c.dictKey}" th:title="${c.dictValue}">
+    </div>
+  </div>
+
+    <label class="layui-form-label">性别</label>
+    <div class="layui-input-block">
+      <input type="radio" name="ssex"  th:each="c:${dict['ssex']}"
+             th:value="${c.dictKey}" th:title="${c.dictValue}">
+
+    </div>
+  </div>
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">请假原因</label>
+    <div class="layui-input-block">
+      <textarea name="description" placeholder="请输入内容" class="layui-textarea"></textarea>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+
+<script>
+  //Demo
+  layui.use('form', function(){
+    var form = layui.form;
+
+    //监听提交
+    form.on('submit(formDemo)', function(data){
+      $ = layui.jquery;
+      var arr_box = [];
+      $('input[type=checkbox]:checked').each(function() {
+        arr_box.push($(this).val());
+      });
+      //数组
+      data.field["physicalCondition"] = arr_box.join(",")
+      // ajax 传输数据
+      $.ajax({
+        url:"/report/save",
+        type:"POST",
+        contentType: "application/json; charset=utf-8",
+        data:JSON.stringify(data.field),
+        dataType:'json',
+        success:function(result){
+          layer.alert("添加成功", {icon: 6},function (index1) {
+            layer.close(index1);
+            location.reload()
+          });
+        }
+      });
+      return false;
+    });
+  });
+</script>
+
+</body>
+</html>

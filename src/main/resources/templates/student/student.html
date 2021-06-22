@@ -14,11 +14,13 @@
     <div class="layui-inline layui-show-xs-block">
       <button class="layui-btn"  lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
     </div>
-    <button class="layui-btn" onclick="xadmin.open('添加用户','/student/add')" ><i class="layui-icon"></i>添加</button>
   </form>
-
 </div>
+<xblock>
+  &ensp;&ensp;&ensp;<button id="addStudnetBtn" class="layui-btn layui-btn-normal"> <i class="layui-icon">&#xe654;</i>添加 </button>
+</xblock>
 <table class="layui-hide" id="test" lay-filter="test"></table>
+
 
 
 <script type="text/html" id="barDemo">
@@ -26,7 +28,78 @@
   <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
+<!--添加模态框-->
+<div class="layui-row" id="test1" style="display: none;">
+  <div class="layui-col-md10">
+    <form class="layui-form" id="addEmployeeForm">
+      <div class="layui-form-item">
+        <label class="layui-form-label">学号：</label>
+        <div class="layui-input-block">
+          <input type="text" lay-verify="required" name="sid"   class="layui-input" placeholder="请输入学号">
+        </div>
+      </div>
 
+      <div class="layui-form-item">
+        <label class="layui-form-label">姓名：</label>
+        <div class="layui-input-block">
+          <input type="text" lay-verify="required" name="sname"  class="layui-input" placeholder="请输入姓名">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">性别</label>
+        <div class="layui-input-block">
+          <input type="radio" name="ssex" value="男" title="男" checked="">
+          <input type="radio" name="ssex" value="女" title="女">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">年龄：</label>
+        <div class="layui-input-block">
+          <input type="text" name="sage" class="layui-input" i placeholder="请输入年龄">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">籍贯：</label>
+        <div class="layui-input-block">
+          <input type="text"  name="snativeplace"  class="layui-input" placeholder="请输入籍贯">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">专业：</label>
+        <div class="layui-input-block">
+          <input type="text" name="smajor" class="layui-input" placeholder="请输入专业">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">班级名：</label>
+        <div class="layui-input-block">
+          <input type="text" name="sclass" class="layui-input" placeholder="请输入班级名">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">民族：</label>
+        <div class="layui-input-block">
+          <input type="text" name="snative"  class="layui-input" placeholder="请输入民族">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button type="button" class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo">提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+</div>
 
 
 <script th:inline="none">
@@ -115,6 +188,9 @@
         })
       }
     });
+
+
+
     //搜索
     form.on('submit(search)', function(data){
       var sid = data.field.sid;
@@ -147,6 +223,51 @@
       return false;
     });
     checkPermission();
+  });
+</script>
+<script>
+  layui.use(['jquery','form','layer','laydate'], function(){
+    var form = layui.form,
+            $ = layui.jquery,
+            laydate = layui.laydate;
+
+    //执行一个laydate实例
+    laydate.render({
+      elem: '#start' //指定元素
+    });
+    /*添加弹出框*/
+    $("#addStudnetBtn").click(function () {
+      layer.open({
+        type:1,
+        title:"添加学生信息",
+        skin:"myclass",
+        area:["50%"],
+        anim:2,
+        content:$("#test1").html()
+      });
+      $("#addEmployeeForm")[0].reset();
+      form.on('submit(formDemo)', function(data) {
+        // layer.msg('aaa',{icon:1,time:3000});
+        var param=data.field;
+        // console.log(JSON.stringify(param));
+        $.ajax({
+          url: '/student/add',
+          type: "post",
+          data:JSON.stringify(param),
+          contentType: "application/json; charset=utf-8",
+          success:function(){
+            layer.msg('添加成功', {icon: 1, time: 2000});
+            setTimeout(function () {window.location.href='/api/getPage?pageName=student/student';},1000);
+
+          },
+          error:function(){
+            layer.msg('添加失败',{icon:0,time:3000});
+          }
+        });
+        return false;
+      });
+    });
+
   });
 </script>
 </body>

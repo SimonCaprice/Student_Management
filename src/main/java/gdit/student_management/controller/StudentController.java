@@ -46,8 +46,13 @@ public class StudentController {
 
     @RequestMapping(value = "/add" ,method = RequestMethod.POST)
     @ResponseBody
-    public String add( @RequestBody Student student) {
+    public String addStudent(@RequestBody Student student) {
+        int s = studentImpl.addStudent(student);
         return "/student/student";
     }
+
+
+
+
 
 }

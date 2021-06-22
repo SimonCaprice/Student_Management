@@ -14,7 +14,9 @@ public interface StudentDao {
 //    @Select("select * from student where sid=#{sid}")
 //    Student getBySid(int sid);
     @Insert("insert into student(sid,sname,sage,ssex,snativeplace,smajor,sclass,snative) values(#{sid},#{sname},#{sage},#{ssex},#{snativeplace},#{smajor},#{sclass},#{snative})")
-    int save(Student student);
+    int addStudent(Student student);
+    @Select("select * from student where sid=#{sid}")
+    Student findStudentById(Integer sid);
     @Select("select count(*) from student t where t.sid like '%${sid}%'")
     Long getSearchStudentCount( String sid);
     @Select("select * from student t where t.sid like '%${sid}%' limit #{offset},#{num}")

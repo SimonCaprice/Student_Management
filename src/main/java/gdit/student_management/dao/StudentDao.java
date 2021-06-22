@@ -1,6 +1,5 @@
 package gdit.student_management.dao;
 
-import gdit.student_management.model.Report;
 import gdit.student_management.model.Student;
 import org.apache.ibatis.annotations.*;
 

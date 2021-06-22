@@ -35,7 +35,7 @@ public class ReportController {
         //把获取到的dict传到/report/add.html页面
         mv.addObject("dict",dict);
         //设置转向的视图名称
-        mv.setViewName("/addReport");
+        mv.setViewName("report/addReport");
         return  mv;
     }
 

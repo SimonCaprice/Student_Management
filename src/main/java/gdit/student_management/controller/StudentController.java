@@ -50,9 +50,11 @@ public class StudentController {
         int s = studentImpl.addStudent(student);
         return "/student/student";
     }
-
-
-
+    @RequestMapping("/getSex")
+    @ResponseBody
+    public Results getSex(){
+        return studentImpl.countSex();
+    }
 
 
 }

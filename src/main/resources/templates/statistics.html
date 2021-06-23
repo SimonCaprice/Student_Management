@@ -1,0 +1,42 @@
+<!doctype html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>学生管理系统</title>
+    <header th:replace="header::html"></header>
+</head>
+
+<body class="index">
+
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+<div id="main" style="width: 600px;height:400px;"></div>
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    var option;
+
+    $.get('/student/getSex').done(function (res) {
+        myChart.setOption({
+            title: {
+                text: '性别统计',
+                left: 'center'
+            },
+            tooltip: {},
+            legend: {
+                data:['性别']
+            },
+            xAxis: {
+                data: ['男','女']
+            },
+            yAxis: {},
+            series: [{
+                name: '性别数据',
+                type: 'bar',
+                data: res.data
+            }]
+        });
+    });
+</script>
+
+</body>

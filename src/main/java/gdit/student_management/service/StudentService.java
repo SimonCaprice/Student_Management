@@ -10,4 +10,6 @@ public interface StudentService {
     Results update(Student student);
     Results delete(int sid);
     Results getSearchStudent(String sid, int offset, int num);
+    Results countSex();
+    int count();
 }

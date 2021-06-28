@@ -1,0 +1,49 @@
+<!doctype html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>学生管理系统</title>
+    <header th:replace="header::html"></header>
+</head>
+<body class="index">
+
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+
+
+
+<script th:inline="none">
+    layui.use('table', function() {
+        var table = layui.table;
+        form = layui.form;
+        table.render({
+            elem: '#test'
+            , url: '/report/list'
+            , page: true
+            , response: {
+                countName: 'count',
+                dataName: 'datas'
+            }
+            , title: '用户数据表'
+            , cols: [[
+                {field: 'id', title: '序号', width: 120, fixed: 'left', unresize: true, sort: true}
+                , {field: 'applicant', title: '申请人', width: 80, edit: 'text'}
+                , {field: 'ssex', title: '性别', width: 50, edit: 'text', sort: true}
+                , {field: 'sclass', title: '班级', width: 100}
+                , {field: 'snumber', title: '学号', width: 100}
+                , {field: 'reason', title: '请假原因',width: 100,}
+                , {field: 'duration', title: '时长', width: 100}
+                , {field: 'description', title: '行程描述'}
+                , {field: 'createTime', title: '创建时间', width: 120}
+            ]]
+            , done: function () {
+                checkPermission()
+            }
+        })
+    });
+
+
+</script>
+</body>
+</html>

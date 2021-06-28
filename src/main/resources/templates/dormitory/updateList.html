@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>学生管理系统</title>
+
+</head>
+<header th:replace="header::html"></header>
+<body class="index">
+
+<form class="layui-form" action="/student/update" method="post" >
+    <div class="layui-form-item">
+        <label class="layui-form-label">代号</label>
+        <div class="layui-input-inline">
+            <input type="text" name="did" id="updatedid"  value=""  autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">公寓名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="ddormbuilding" id="updateddormbuilding" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">房间号</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sdormitoryid" id="updatesdormitoryid" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">总数</label>
+        <div class="layui-input-inline">
+            <input type="text" name="dbedtotal" id="updatedbedtotal" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">已用床位</label>
+        <div class="layui-input-inline">
+            <input type="text" name="dbed" id="updatedbed" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">宿舍长</label>
+        <div class="layui-input-inline">
+            <input type="text" name="aname" id="updateaname" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            $ = layui.jquery;
+            var arr_box = [];
+            $('input[type=checkbox]:checked').each(function() {
+                arr_box.push($(this).val());
+            });
+            //数组
+            //data.field["physicalCondition"] = arr_box.join(",")
+            // ajax 传输数据
+            $.ajax({
+                url:"/dormitory/update",
+                type:"POST",
+                contentType: "application/json; charset=utf-8",
+                data:JSON.stringify(data.field),
+                dataType:'json',
+                success:function(result){
+                    layer.alert("修改成功", {icon: 6},function () {
+                        //关闭当前frame
+                        xadmin.close();
+                        // 可以对父窗口进行刷新
+                        xadmin.father_reload();
+                    });
+                },
+                error:function(){
+                    layer.msg('修改失败',{icon:0,time:2000});
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

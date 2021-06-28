@@ -1,0 +1,255 @@
+<!doctype html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>学生管理系统</title>
+    <header th:replace="header::html"></header>
+</head>
+<body class="index">
+<div class="layui-card-body ">
+    <form class="layui-form  layui-col-space5">
+        <div class="layui-inline layui-show-xs-block">
+            <input type="text" name="did"  placeholder="请输入班级号" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-inline layui-show-xs-block">
+            <button class="layui-btn"  lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
+        </div>
+    </form>
+</div>
+<xblock>
+    &ensp;&ensp;&ensp;<button id="addDormitoryBtn" class="layui-btn layui-btn-normal"> <i class="layui-icon">&#xe654;</i>添加 </button>
+</xblock>
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<!--添加模态框-->
+<div class="layui-row" id="test1" style="display: none;">
+    <div class="layui-col-md10">
+        <form class="layui-form" id="addEmployeeForm">
+            <div class="layui-form-item">
+                <label class="layui-form-label">代号：</label>
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="required" name="did"   class="layui-input" placeholder="请输入代号">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">楼名：</label>
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="required" name="ddormbuilding"  class="layui-input" placeholder="请输入学院">
+                </div>
+            </div>
+
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">房间号：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="sdormitoryid" class="layui-input" i placeholder="请输入专业">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">总数：</label>
+                <div class="layui-input-block">
+                    <input type="text"  name="dbedtotal"  class="layui-input" placeholder="请输入班级">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">已用床位：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="dbed" class="layui-input" placeholder="请输入人数">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">宿舍长：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="aname" class="layui-input" placeholder="请输入班主任">
+                </div>
+            </div>
+
+
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo">提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</div>
+
+
+<script th:inline="none">
+    layui.use('table', function(){
+        var table = layui.table;
+        form = layui.form;
+        table.render({
+            elem: '#test'
+            ,url:'/dormitory/list'
+            ,page: true
+            ,response: {
+                countName: 'count',
+                dataName: 'datas'
+            }
+            ,title: '班级数据表'
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'did', title:'代号', width:120, fixed: 'left', unresize: true, sort: true}
+                ,{field:'ddormbuilding', title:'楼名', width:80, edit: 'text'}
+                ,{field:'sdormitoryid', title:'房间号', width:50, edit: 'text', sort: true}
+                ,{field:'dbedtotal', title:'总数', width:100}
+                ,{field:'dbed', title:'已用床位', width:100}
+                ,{field:'aname', title:'宿舍长', width:120, sort: true}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+
+            ]]
+            ,done:function(){
+                checkPermission()
+            }
+        });
+
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('确定删除吗？', function(index){
+                    $.ajax({
+                        url:"/dormitory/delete",
+                        type:"post",
+                        data:{'did':data.did},
+                        success:function (res) {
+                            if (res.code==200 || res.code==0){
+                                obj.del();//仅删除应行（tr）的Dom结构，并更行缓存
+                                layui.table.reload('demo');
+                                layer.close(index);
+                                console.log(index);
+                                layer.msg("删除成功",{icon:1});
+                            }else {
+                                layer.msg("删除失败",{icon:5});
+                            }
+
+                        }
+                    })
+                });
+            } else if(obj.event === 'edit'){
+                layer.open({
+                    title:"修改",
+                    type:2,  //(iframe层) 类型是打开html页面
+                    area:['45%','70%'],      //弹出层宽高
+                    content:"/dormitory/update",
+                    success:function (layero) {
+                        //获取当前打开的子页面id
+                        var did = $(layero).find("iframe").contents().find("#updatedid");
+                        var ddormbuilding = $(layero).find("iframe").contents().find("#updateddormbuilding");
+                        var sdormitoryid = $(layero).find("iframe").contents().find("#updatesdormitoryid");
+                        var dbedtotal = $(layero).find("iframe").contents().find("#updatedbedtotal");
+                        var dbed = $(layero).find("iframe").contents().find("#updatedbed");
+                        var aname = $(layero).find("iframe").contents().find("#updateaname");
+                        //把当前页id值传给子页面
+                        did.val(data.did);
+                        ddormbuilding.val(data.ddormbuilding);
+                        sdormitoryid.val(data.sdormitoryid);
+                        dbedtotal.val(data.dbedtotal);
+                        dbed.val(data.dbed);
+                        aname.val(data.aname);
+
+                    }
+                })
+            }
+        });
+
+
+
+        //搜索
+        form.on('submit(search)', function(data){
+            var did = data.field.did;
+            table.render({
+                elem: '#test'
+                ,url: '/dormitory/search' //数据接口
+                ,page: true //开启分页
+                ,where:{
+                    "did":did
+                }
+                ,response: {
+
+                    countName: 'count', //规定数据总数的字段名称，默认：count
+                    dataName: 'datas' //规定数据列表的字段名称，默认：data
+                }
+                ,cols: [[
+                    {type: 'checkbox', fixed: 'left'}
+                    ,{field:'did', title:'代号', width:120, fixed: 'left', unresize: true, sort: true}
+                    ,{field:'ddormbuilding', title:'楼名', width:80, edit: 'text'}
+                    ,{field:'sdormitoryid', title:'房间号', width:50, edit: 'text', sort: true}
+                    ,{field:'dbedtotal', title:'总数', width:100}
+                    ,{field:'dbed', title:'已用床位', width:100}
+                    ,{field:'aname', title:'宿舍长', width:120, sort: true}
+                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+
+                ]]
+            });
+            return false;
+        });
+        checkPermission();
+    });
+</script>
+<script>
+    layui.use(['jquery','form','layer','laydate'], function(){
+        var form = layui.form,
+            $ = layui.jquery,
+            laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+        /*添加弹出框*/
+        $("#addDormitoryBtn").click(function () {
+            layer.open({
+                type:1,
+                title:"添加宿舍信息",
+                skin:"myclass",
+                area:["50%"],
+                anim:2,
+                content:$("#test1").html()
+            });
+            $("#addEmployeeForm")[0].reset();
+            form.on('submit(formDemo)', function(data) {
+                // layer.msg('aaa',{icon:1,time:3000});
+                var param=data.field;
+                // console.log(JSON.stringify(param));
+                $.ajax({
+                    url: '/dormitory/add',
+                    type: "post",
+                    data:JSON.stringify(param),
+                    contentType: "application/json; charset=utf-8",
+                    success:function(){
+                        layer.msg('添加成功', {icon: 1, time: 2000});
+                        setTimeout(function () {window.location.href='/api/getPage?pageName=dormitory/dormitory';},1000);
+
+                    },
+                    error:function(){
+                        layer.msg('添加失败',{icon:0,time:3000});
+                    }
+                });
+                return false;
+            });
+        });
+
+    });
+</script>
+</body>
+</html>

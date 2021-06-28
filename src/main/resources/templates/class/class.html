@@ -9,16 +9,18 @@
 <div class="layui-card-body ">
   <form class="layui-form  layui-col-space5">
     <div class="layui-inline layui-show-xs-block">
-      <input type="text" name="sid"  placeholder="请输入学号" autocomplete="off" class="layui-input">
+      <input type="text" name="cid"  placeholder="请输入班级号" autocomplete="off" class="layui-input">
     </div>
     <div class="layui-inline layui-show-xs-block">
       <button class="layui-btn"  lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
     </div>
-    <button class="layui-btn" onclick="xadmin.open('添加用户','/student/add')" ><i class="layui-icon"></i>添加</button>
   </form>
-
 </div>
+<xblock>
+  &ensp;&ensp;&ensp;<button id="addClassBtn" class="layui-btn layui-btn-normal"> <i class="layui-icon">&#xe654;</i>添加 </button>
+</xblock>
 <table class="layui-hide" id="test" lay-filter="test"></table>
+
 
 
 <script type="text/html" id="barDemo">
@@ -26,7 +28,72 @@
   <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
+<!--添加模态框-->
+<div class="layui-row" id="test1" style="display: none;">
+  <div class="layui-col-md10">
+    <form class="layui-form" id="addEmployeeForm">
+      <div class="layui-form-item">
+        <label class="layui-form-label">代号：</label>
+        <div class="layui-input-block">
+          <input type="text" lay-verify="required" name="cid"   class="layui-input" placeholder="请输入代号">
+        </div>
+      </div>
 
+      <div class="layui-form-item">
+        <label class="layui-form-label">学院：</label>
+        <div class="layui-input-block">
+          <input type="text" lay-verify="required" name="cfaculty"  class="layui-input" placeholder="请输入学院">
+        </div>
+      </div>
+
+
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">专业：</label>
+        <div class="layui-input-block">
+          <input type="text" name="cmajor" class="layui-input" i placeholder="请输入专业">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">班级：</label>
+        <div class="layui-input-block">
+          <input type="text"  name="cclass"  class="layui-input" placeholder="请输入班级">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">人数：</label>
+        <div class="layui-input-block">
+          <input type="text" name="cpeoplenumber" class="layui-input" placeholder="请输入人数">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">班主任：</label>
+        <div class="layui-input-block">
+          <input type="text" name="cheadteacher" class="layui-input" placeholder="请输入班主任">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">联系号码：</label>
+        <div class="layui-input-block">
+          <input type="text" name="ccontactnumber"  class="layui-input" placeholder="请输入联系号码">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button type="button" class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo">提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+</div>
 
 
 <script th:inline="none">
@@ -41,16 +108,16 @@
         countName: 'count',
         dataName: 'datas'
       }
-      ,title: '用户数据表'
+      ,title: '班级数据表'
       ,cols: [[
         {type: 'checkbox', fixed: 'left'}
-        ,{field:'cId', title:'学号', width:120, fixed: 'left', unresize: true, sort: true}
-        ,{field:'cFaculty', title:'性名', width:80, edit: 'text'}
-        ,{field:'cMajor', title:'性别', width:50, edit: 'text', sort: true}
-        ,{field:'cClass', title:'年龄', width:100}
-        ,{field:'cPeopleNumber', title:'籍贯', width:100}
-        ,{field:'cHeadTeacher', title:'专业', width:120, sort: true}
-        ,{field:'cContactNumber', title:'班级', width:120}
+        ,{field:'cid', title:'代号', width:120, fixed: 'left', unresize: true, sort: true}
+        ,{field:'cfaculty', title:'学院', width:80, edit: 'text'}
+        ,{field:'cmajor', title:'专业', width:50, edit: 'text', sort: true}
+        ,{field:'cclass', title:'班级', width:100}
+        ,{field:'cpeoplenumber', title:'人数', width:100}
+        ,{field:'cheadteacher', title:'班主任', width:120, sort: true}
+        ,{field:'ccontactnumber', title:'联系号码', width:120}
         ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
 
       ]]
@@ -67,9 +134,9 @@
       if(obj.event === 'del'){
         layer.confirm('确定删除吗？', function(index){
           $.ajax({
-            url:"/student/delete",
+            url:"/class/delete",
             type:"post",
-            data:{'sid':data.sid},
+            data:{'cid':data.cid},
             success:function (res) {
               if (res.code==200 || res.code==0){
                 obj.del();//仅删除应行（tr）的Dom结构，并更行缓存
@@ -89,40 +156,41 @@
           title:"修改",
           type:2,  //(iframe层) 类型是打开html页面
           area:['45%','70%'],      //弹出层宽高
-          content:"/student/update",
+          content:"/class/update",
           success:function (layero) {
             //获取当前打开的子页面id
-            var sid = $(layero).find("iframe").contents().find("#updateid");
-            var sname = $(layero).find("iframe").contents().find("#updatesname");
-            var sage = $(layero).find("iframe").contents().find("#updatesage");
-            var ssex = $(layero).find("iframe").contents().find("#updatessex");
-            var snativeplace = $(layero).find("iframe").contents().find("#updatesnativeplace");
-            var smajor = $(layero).find("iframe").contents().find("#updatesmajor");
-            var sclass = $(layero).find("iframe").contents().find("#updatesclass");
-            var snative = $(layero).find("iframe").contents().find("#updatesnative");
+            var cid = $(layero).find("iframe").contents().find("#updatecid");
+            var cfaculty = $(layero).find("iframe").contents().find("#updatecfaculty");
+            var cmajor = $(layero).find("iframe").contents().find("#updatecmajor");
+            var cclass = $(layero).find("iframe").contents().find("#updatecclass");
+            var cpeoplenumber = $(layero).find("iframe").contents().find("#updatecpeoplenumber");
+            var cheadteacher = $(layero).find("iframe").contents().find("#updatecheadteacher");
+            var ccontactnumber = $(layero).find("iframe").contents().find("#updateccontactnumber");
             //把当前页id值传给子页面
-            sid.val(data.sid);
-            sname.val(data.sname);
-            sage.val(data.sage);
-            ssex.val(data.ssex);
-            snativeplace.val(data.snativeplace);
-            smajor.val(data.smajor);
-            sclass.val(data.sclass);
-            snative.val(data.snative);
+            cid.val(data.cid);
+            cfaculty.val(data.cfaculty);
+            cmajor.val(data.cmajor);
+            cclass.val(data.cclass);
+            cpeoplenumber.val(data.cpeoplenumber);
+            cheadteacher.val(data.cheadteacher);
+            ccontactnumber.val(data.ccontactnumber);
 
           }
         })
       }
     });
+
+
+
     //搜索
     form.on('submit(search)', function(data){
-      var sid = data.field.sid;
+      var cid = data.field.cid;
       table.render({
         elem: '#test'
-        ,url: '/student/search' //数据接口
+        ,url: '/class/search' //数据接口
         ,page: true //开启分页
         ,where:{
-          "sid":sid
+          "cid":cid
         }
         ,response: {
 
@@ -131,14 +199,13 @@
         }
         ,cols: [[
           {type: 'checkbox', fixed: 'left'}
-          ,{field:'sid', title:'学号', width:80, fixed: 'left', unresize: true, sort: true}
-          ,{field:'sname', title:'性名', width:120, edit: 'text'}
-          ,{field:'ssex', title:'性别', width:80, edit: 'text', sort: true}
-          ,{field:'sage', title:'年龄', width:100}
-          ,{field:'snativeplace', title:'籍贯', width:100}
-          ,{field:'smajor', title:'专业', width:80, sort: true}
-          ,{field:'sclass', title:'班级', width:120}
-          ,{field:'snative', title:'民族', width:100, sort: true}
+          ,{field:'cid', title:'代号', width:120, fixed: 'left', unresize: true, sort: true}
+          ,{field:'cfaculty', title:'学院', width:80, edit: 'text'}
+          ,{field:'cmajor', title:'专业', width:50, edit: 'text', sort: true}
+          ,{field:'cclass', title:'班级', width:100}
+          ,{field:'cpeoplenumber', title:'人数', width:100}
+          ,{field:'cheadteacher', title:'班主任', width:120, sort: true}
+          ,{field:'ccontactnumber', title:'联系号码', width:120}
           ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
 
         ]]
@@ -146,6 +213,51 @@
       return false;
     });
     checkPermission();
+  });
+</script>
+<script>
+  layui.use(['jquery','form','layer','laydate'], function(){
+    var form = layui.form,
+            $ = layui.jquery,
+            laydate = layui.laydate;
+
+    //执行一个laydate实例
+    laydate.render({
+      elem: '#start' //指定元素
+    });
+    /*添加弹出框*/
+    $("#addClassBtn").click(function () {
+      layer.open({
+        type:1,
+        title:"添加班级信息",
+        skin:"myclass",
+        area:["50%"],
+        anim:2,
+        content:$("#test1").html()
+      });
+      $("#addEmployeeForm")[0].reset();
+      form.on('submit(formDemo)', function(data) {
+        // layer.msg('aaa',{icon:1,time:3000});
+        var param=data.field;
+        // console.log(JSON.stringify(param));
+        $.ajax({
+          url: '/class/add',
+          type: "post",
+          data:JSON.stringify(param),
+          contentType: "application/json; charset=utf-8",
+          success:function(){
+            layer.msg('添加成功', {icon: 1, time: 2000});
+            setTimeout(function () {window.location.href='/api/getPage?pageName=class/class';},1000);
+
+          },
+          error:function(){
+            layer.msg('添加失败',{icon:0,time:3000});
+          }
+        });
+        return false;
+      });
+    });
+
   });
 </script>
 </body>

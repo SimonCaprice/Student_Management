@@ -26,6 +26,7 @@ public class StudentController {
         int offset = (page - 1) * limit;//offset表示从第几条记录开始，linmit表示显示多少行
         return studentImpl.getAllStudents(offset, limit);
     }
+    /*更新*/
     @GetMapping("/update")
     public String upadte(){return  "/student/updateList";}
 
@@ -33,10 +34,12 @@ public class StudentController {
     @ResponseBody
     public Results update(@RequestBody  Student student){ return studentImpl.update(student);}
 
+    /*删除*/
     @RequestMapping("/delete")
     @ResponseBody
     public Results delete(int sid){return  studentImpl.delete(sid);}
 
+    /*搜索*/
     @RequestMapping("/search")
     @ResponseBody
     public Results<Student> getSearchStudentCount(PageTableRequest requests,String sid){

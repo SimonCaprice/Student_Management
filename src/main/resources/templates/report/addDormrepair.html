@@ -1,0 +1,99 @@
+<!doctype html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>学生管理系统</title>
+    <header th:replace="header::html"></header>
+</head>
+<body class="index">
+<!--提交到SysPeportController的save方法-->
+
+<form class="layui-form" >
+    <div class="layui-form-item">
+        <label class="layui-form-label">房间号</label>
+        <div class="layui-input-inline">
+            <input type="text" name="did" lay-verify="required" placeholder="请输入" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">宿舍楼数</label>
+        <div class="layui-input-inline" >
+            <select name="ddormbuilding" lay-filter="aihao">
+                <option value=""></option>
+                <option value="1号楼" selected="">1号楼</option>
+                <option value="2号楼">2号楼</option>
+                <option value="3号楼">2号楼</option>
+                <option value="4号楼">4号楼</option>
+                <option value="5号楼">5号楼</option>
+                <option value="6号楼">6号楼</option>
+                <option value="7号楼">7号楼</option>
+                <option value="8号楼">8号楼</option>
+                <option value="9号楼">9号楼</option>
+                <option value="10号楼">10号楼</option>
+                <option value="11号楼">11号楼</option>
+                <option value="12号楼">12号楼</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">申请人姓名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="rname" lay-verify="required" placeholder="请输入姓名" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">请输入损坏物:</label>
+        <div class="layui-input-inline">
+            <input type="text" name="reason" lay-verify="required" placeholder="请输入损坏物" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            $ = layui.jquery;
+            var arr_box = [];
+            $('input[type=checkbox]:checked').each(function() {
+                arr_box.push($(this).val());
+            });
+            //数组
+            //data.field["physicalCondition"] = arr_box.join(",")
+            // ajax 传输数据
+            $.ajax({
+                url:"/dormrepair/add",
+                type:"POST",
+                contentType: "application/json; charset=utf-8",
+                data:JSON.stringify(data.field),
+                dataType:'json',
+                success:function(result){
+                    layer.alert("添加失败", {icon: 0},function (index1) {
+                        layer.close(index1);
+                        location.reload()
+                    });
+                },
+                error:function(){
+                    layer.msg('添加成功',{icon:6,time:2000});
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+</body>
+</html>

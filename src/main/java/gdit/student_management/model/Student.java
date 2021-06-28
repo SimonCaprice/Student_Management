@@ -1,11 +1,10 @@
 package gdit.student_management.model;
 
-
 public class Student {
 
-  private Long sid;
+  private long sid;
   private String sname;
-  private Long sage;
+  private long sage;
   private String ssex;
   private String snativeplace;
   private String smajor;
@@ -13,11 +12,11 @@ public class Student {
   private String snative;
 
 
-  public Long getSid() {
+  public long getSid() {
     return sid;
   }
 
-  public void setSid(Long sid) {
+  public void setSid(long sid) {
     this.sid = sid;
   }
 
@@ -31,11 +30,11 @@ public class Student {
   }
 
 
-  public Long getSage() {
+  public long getSage() {
     return sage;
   }
 
-  public void setSage(Long sage) {
+  public void setSage(long sage) {
     this.sage = sage;
   }
 

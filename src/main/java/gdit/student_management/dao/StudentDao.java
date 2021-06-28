@@ -25,7 +25,7 @@ public interface StudentDao {
     int update(Student student);
     @Delete("delete from student where sid=#{sid}")
     int delete(int sid);
-/*    计算不同专业的记录*/
+/*    计算不同性别的记录*/
     @Select("select count(*) from student where ssex=#{temp}")
     int countSex(String sex);
 }

@@ -27,12 +27,12 @@
       }
       , title: '用户数据表'
       , cols: [[
-        {field: 'rid', title: '序号', width: 120, fixed: 'left', unresize: true, sort: true}
+        {field: 'rid', title: '序号', width: 50, fixed: 'left', unresize: true, sort: true}
         , {field: 'did', title: '房号', width: 80, edit: 'text'}
-        , {field: 'ddormbuilding', title: '楼号', width: 50, edit: 'text', sort: true}
+        , {field: 'ddormbuilding', title: '楼号', width: 120, edit: 'text', sort: true}
         , {field: 'rname', title: '姓名', width: 100}
         , {field: 'reason', title: '损坏物', width: 100}
-        , {field: 'createTime', title: '创建时间', width: 120}
+        , {field: 'createTime', title: '创建时间', width: 200}
       ]]
       , done: function () {
         checkPermission()

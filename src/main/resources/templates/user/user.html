@@ -28,12 +28,12 @@
             , title: '用户数据表'
             , cols: [[
                 {type: 'checkbox', fixed: 'left'}
-                , {field: 'id', title: '序号', width: 120, fixed: 'left', unresize: true, sort: true}
+                , {field: 'id', title: '序号', width: 50, fixed: 'left', unresize: true, sort: true}
                 , {field: 'username', title: '账号', width: 80, edit: 'text'}
-                , {field: 'nickname', title: '用户名', width: 50, edit: 'text', sort: true}
-                , {field: 'telephone', title: '电话', width: 100}
-                , {field: 'email', title: '邮箱', width: 100}
-                , {field: 'createTime', title: '创建时间', width: 120}
+                , {field: 'nickname', title: '用户名', width: 100, edit: 'text', sort: true}
+                , {field: 'telephone', title: '电话', width: 150}
+                , {field: 'email', title: '邮箱', width: 180}
+                , {field: 'createTime', title: '创建时间', width: 200}
             ]]
             , done: function () {
                 checkPermission()
